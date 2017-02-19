@@ -1,0 +1,2 @@
+# diptype
+Dynamic type accessor.
