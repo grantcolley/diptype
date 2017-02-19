@@ -1,2 +1,2 @@
 # diptype
-Dynamic type accessor.
+Dynamic type accessor for getting and setting properties.
