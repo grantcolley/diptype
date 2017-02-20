@@ -32,10 +32,11 @@ namespace DevelopmentInProgress.DipType
             }
 
             TypeAttributes attribs = typeof (TypeHelperBase).Attributes;
+            attribs = (attribs | TypeAttributes.Sealed | TypeAttributes.Public) &
+                      ~(TypeAttributes.Abstract | TypeAttributes.NotPublic);
 
             TypeBuilder tb = module.DefineType("TypeHelper." + typeof (T).Name + "." + GetNextCounterValue(),
-                (attribs | TypeAttributes.Sealed | TypeAttributes.Public) &
-                ~(TypeAttributes.Abstract | TypeAttributes.NotPublic), typeof (TypeHelperBase));
+                attribs, typeof (TypeHelperBase));
 
             var ctor = tb.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
             var ctorIL = ctor.GetILGenerator();
@@ -60,13 +61,13 @@ namespace DevelopmentInProgress.DipType
 
             MethodBuilder setValueBody = tb.DefineMethod(baseSetValue.Name,
                 baseSetValue.Attributes & ~MethodAttributes.Abstract,
-                typeof (object), new Type[] {typeof (object), typeof (string)});
+                null, new Type[] { typeof(object), typeof(string), typeof(object) });
 
             var setValueIL = setValueBody.GetILGenerator();
 
             GetSetValueIL<T>(setValueIL, propertyInfos, false);
 
-            tb.DefineMethodOverride(setValueBody, baseGetValue);
+            tb.DefineMethodOverride(setValueBody, baseSetValue);
 
             var typeHelper = (TypeHelperBase) Activator.CreateInstance(tb.CreateType(), Type.EmptyTypes);
 
@@ -86,7 +87,7 @@ namespace DevelopmentInProgress.DipType
 
             for (int i = 0; i < numberOfProperties; i++)
             {
-                labels[0] = il.DefineLabel();
+                labels[i] = il.DefineLabel();
             }
 
             for (int i = 0; i < numberOfProperties; i++)
@@ -112,12 +113,13 @@ namespace DevelopmentInProgress.DipType
                 {
                     var getAccessor = property.GetGetMethod();
 
-                    il.EmitCall(OpCodes.Callvirt, getAccessor, null);
+                    il.Emit(OpCodes.Ldstr, property.Name);
+                    //il.EmitCall(OpCodes.Callvirt, getAccessor, null);
 
-                    if (property.PropertyType.IsValueType)
-                    {
-                        il.Emit(OpCodes.Box, property.PropertyType);
-                    }
+                    //if (property.PropertyType.IsValueType)
+                    //{
+                    //    il.Emit(OpCodes.Box, property.PropertyType);
+                    //}
                 }
                 else
                 {
