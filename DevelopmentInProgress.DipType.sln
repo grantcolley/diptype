@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevelopmentInProgress.DipType", "DevelopmentInProgress.DipType\DevelopmentInProgress.DipType.csproj", "{E7120A4F-3AD5-4B9E-90C3-3994E1FDBDAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevelopmentInProgress.DipType.Test", "DevelopmentInProgress.DipType.Test\DevelopmentInProgress.DipType.Test.csproj", "{C7AD6759-EE2D-424C-A971-FB0493AB067D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{E7120A4F-3AD5-4B9E-90C3-3994E1FDBDAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7120A4F-3AD5-4B9E-90C3-3994E1FDBDAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7120A4F-3AD5-4B9E-90C3-3994E1FDBDAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7AD6759-EE2D-424C-A971-FB0493AB067D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7AD6759-EE2D-424C-A971-FB0493AB067D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7AD6759-EE2D-424C-A971-FB0493AB067D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7AD6759-EE2D-424C-A971-FB0493AB067D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
