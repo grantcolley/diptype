@@ -1,2 +1,2 @@
 # diptype
-Dynamic type accessor for getting and setting properties.
+Type helper for dynamically creating new instances of classes, getting and setting properties.
