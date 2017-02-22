@@ -34,7 +34,7 @@ namespace DevelopmentInProgress.DipType
             if (assemblyBuilder == null)
             {
                 assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                    new AssemblyName("TypeHelperAssembly"), AssemblyBuilderAccess.Run);
+                    new AssemblyName("TypeHelperAssembly"), AssemblyBuilderAccess.RunAndSave);
 
                 moduleBuilder = assemblyBuilder.DefineDynamicModule("TypeHelperModule");
             }
@@ -83,7 +83,7 @@ namespace DevelopmentInProgress.DipType
 
             var setValueBody = typeBuilder.DefineMethod(baseSetValue.Name,
                 baseSetValue.Attributes & ~MethodAttributes.Abstract,
-                typeof(void), new Type[] { typeof(object), typeof(string), typeof(object) });
+                null, new Type[] { typeof(object), typeof(string), typeof(object) });
 
             var setValueIL = setValueBody.GetILGenerator();
 
@@ -164,7 +164,6 @@ namespace DevelopmentInProgress.DipType
                 il.Emit(OpCodes.Beq, labels[i]);
             }
 
-            //il.Emit(OpCodes.Ldstr, typeof(T).Name + " doesn't have a property called ");
             il.Emit(OpCodes.Ldarg_2);
             il.Emit(OpCodes.Newobj, typeof(ArgumentOutOfRangeException).GetConstructor(new Type[] { typeof(string) }));
             il.Emit(OpCodes.Throw);
@@ -175,11 +174,11 @@ namespace DevelopmentInProgress.DipType
 
                 il.MarkLabel(labels[i]);
 
+                il.Emit(OpCodes.Ldarg_1);
+
                 if (isGet)
                 {
                     var getAccessor = property.GetGetMethod();
-
-                    il.Emit(OpCodes.Ldarg_1);
 
                     il.EmitCall(OpCodes.Callvirt, getAccessor, null);
 
@@ -190,13 +189,13 @@ namespace DevelopmentInProgress.DipType
                 }
                 else
                 {
-                    var setAccessor = property.GetGetMethod();
+                    var setAccessor = property.GetSetMethod();
 
-                    il.Emit(OpCodes.Ldarg_2);
+                    il.Emit(OpCodes.Ldarg_3);
 
                     if (property.PropertyType.IsValueType)
                     {
-                        il.Emit(OpCodes.Unbox, property.PropertyType);
+                        il.Emit(OpCodes.Unbox_Any, property.PropertyType);
                     }
 
                     il.EmitCall(OpCodes.Callvirt, setAccessor, null);
