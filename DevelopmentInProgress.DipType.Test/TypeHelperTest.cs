@@ -77,49 +77,49 @@ namespace DevelopmentInProgress.DipType.Test
             // Assert
         }
 
-        //[TestMethod]
-        //public void SetValue()
-        //{
-        //    // Arrange
-        //    var activityHelper = TypeHelper.CreateInstance<Activity>();
-        //    var activity = new Activity();
-        //    var created = DateTime.Now;
+        [TestMethod]
+        public void SetValue()
+        {
+            // Arrange
+            var activityHelper = TypeHelper.CreateInstance<Activity>();
+            var activity = new Activity();
+            var created = DateTime.Now;
 
-        //    // Act
-        //    activityHelper.SetValue(activity, "Id", 100);
-        //    activityHelper.SetValue(activity, "Name", "Read");
-        //    activityHelper.SetValue(activity, "Level", 7.7);
-        //    activityHelper.SetValue(activity, "IsActive", true);
-        //    activityHelper.SetValue(activity, "Created", created);
+            // Act
+            activityHelper.SetValue(activity, "Id", 100);
+            activityHelper.SetValue(activity, "Name", "Read");
+            activityHelper.SetValue(activity, "Level", 7.7);
+            activityHelper.SetValue(activity, "IsActive", true);
+            activityHelper.SetValue(activity, "Created", created);
 
-        //    // Assert
-        //    Assert.AreEqual(activity.Id, 100);
-        //    Assert.AreEqual(activity.Name, "Read");
-        //    Assert.AreEqual(activity.Level, 7.7);
-        //    Assert.AreEqual(activity.IsActive, true);
-        //    Assert.AreEqual(activity.Created, created);
-        //    Assert.AreEqual(activity.Updated, null);
-        //}
+            // Assert
+            Assert.AreEqual(activity.Id, 100);
+            Assert.AreEqual(activity.Name, "Read");
+            Assert.AreEqual(activity.Level, 7.7);
+            Assert.AreEqual(activity.IsActive, true);
+            Assert.AreEqual(activity.Created, created);
+            Assert.AreEqual(activity.Updated, null);
+        }
 
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
-        //public void SetValue_ExpectedException()
-        //{
-        //    // Arrange
-        //    var activityHelper = TypeHelper.CreateInstance<Activity>();
-        //    var activity = new Activity();
-        //    var created = DateTime.Now;
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void SetValue_ExpectedException()
+        {
+            // Arrange
+            var activityHelper = TypeHelper.CreateInstance<Activity>();
+            var activity = new Activity();
+            var created = DateTime.Now;
 
-        //    // Act
-        //    activityHelper.SetValue(activity, "Id", 100);
-        //    activityHelper.SetValue(activity, "Name", "Read");
-        //    activityHelper.SetValue(activity, "Level", 7.7);
-        //    activityHelper.SetValue(activity, "IsActive", true);
-        //    activityHelper.SetValue(activity, "Created", created);
-        //    activityHelper.SetValue(activity, "Test", true);
+            // Act
+            activityHelper.SetValue(activity, "Id", 100);
+            activityHelper.SetValue(activity, "Name", "Read");
+            activityHelper.SetValue(activity, "Level", 7.7);
+            activityHelper.SetValue(activity, "IsActive", true);
+            activityHelper.SetValue(activity, "Created", created);
+            activityHelper.SetValue(activity, "Test", true);
 
-        //    // Assert
-        //}
+            // Assert
+        }
 
         [TestMethod]
         public void New()
