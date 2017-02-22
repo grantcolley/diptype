@@ -20,6 +20,41 @@ namespace DevelopmentInProgress.DipType.Test
         }
 
         [TestMethod]
+        public void CreateChachedInstance()
+        {
+            // Arrange
+            var activityHelper1 = TypeHelper.CreateInstance<Activity>();
+            var activityHelper2 = TypeHelper.CreateInstance<Activity>();
+
+            // Act
+            var activity = activityHelper2.CreateInstance();
+
+            activityHelper2.SetValue(activity, "Id", 100);
+            activityHelper2.SetValue(activity, "Name", "Read");
+            activityHelper2.SetValue(activity, "Level", 7.7);
+            activityHelper2.SetValue(activity, "IsActive", true);
+            activityHelper2.SetValue(activity, "Created", DateTime.Now);
+
+            var id = activityHelper2.GetValue(activity, "Id");
+            var name = activityHelper2.GetValue(activity, "Name");
+            var level = activityHelper2.GetValue(activity, "Level");
+            var isActive = activityHelper2.GetValue(activity, "IsActive");
+            var created = activityHelper2.GetValue(activity, "Created");
+            var updated = activityHelper2.GetValue(activity, "Updated");
+
+            // Assert
+            Assert.IsInstanceOfType(activityHelper1, typeof(TypeHelper<Activity>));
+            Assert.IsInstanceOfType(activityHelper2, typeof(TypeHelper<Activity>));
+
+            Assert.AreEqual(activity.Id, id);
+            Assert.AreEqual(activity.Name, name);
+            Assert.AreEqual(activity.Level, level);
+            Assert.AreEqual(activity.IsActive, isActive);
+            Assert.AreEqual(activity.Created, created);
+            Assert.AreEqual(activity.Updated, updated);
+        }
+
+        [TestMethod]
         public void GetValue()
         {
             // Arrange
