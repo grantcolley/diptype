@@ -11,9 +11,9 @@ using System.Threading;
 
 namespace DevelopmentInProgress.DipType
 {
-    public abstract class TypeHelperBase
+    public abstract class TypeHelper<T>
     {
-        public abstract object New();
+        public abstract T CreateInstance();
         public abstract object GetValue(object obj, string propertyName);
         public abstract void SetValue(object obj, string propertyName, object value);
     }
@@ -26,8 +26,11 @@ namespace DevelopmentInProgress.DipType
 
         private static int counter;
 
-        public static TypeHelperBase Create<T>()
+        public static TypeHelper<T> CreateInstance<T>()
         {
+            var t = typeof (T);
+            var typeHelperType = typeof(TypeHelper<T>);
+
             if (assemblyBuilder == null)
             {
                 assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
@@ -36,23 +39,27 @@ namespace DevelopmentInProgress.DipType
                 moduleBuilder = assemblyBuilder.DefineDynamicModule("TypeHelperModule");
             }
 
-            TypeAttributes attribs = typeof(TypeHelperBase).Attributes;
+            var attribs = typeHelperType.Attributes;
             attribs = (attribs | TypeAttributes.Sealed | TypeAttributes.Public) &
                       ~(TypeAttributes.Abstract | TypeAttributes.NotPublic);
 
-            TypeBuilder typeBuilder = moduleBuilder.DefineType("TypeHelper." + typeof(T).Name + "_" + GetNextCounterValue(),
-                attribs, typeof(TypeHelperBase));
+            var typeBuilder = moduleBuilder.DefineType("TypeHelper." + t.Name + "_" + GetNextCounterValue(),
+                attribs, typeHelperType);
 
-            MethodInfo baseNew = typeof(TypeHelperBase).GetMethod("New");
+            var genericTypeParameterBuilder = typeBuilder.DefineGenericParameters(new[] {"T"});
 
-            MethodBuilder newBody = typeBuilder.DefineMethod(baseNew.Name, baseNew.Attributes, baseNew.ReturnType,
-                Type.EmptyTypes);
+            genericTypeParameterBuilder[0].SetGenericParameterAttributes(
+                GenericParameterAttributes.DefaultConstructorConstraint |
+                GenericParameterAttributes.ReferenceTypeConstraint);
 
-            ConstructorInfo ctor = typeof(T).GetConstructor(Type.EmptyTypes);
+            var baseNew = typeHelperType.GetMethod("CreateInstance");
 
-            ILGenerator newIl = newBody.GetILGenerator();
+            var newBody = typeBuilder.DefineMethod(baseNew.Name, baseNew.Attributes & ~MethodAttributes.Abstract,
+                baseNew.ReturnType, Type.EmptyTypes);
 
-            newIl.Emit(OpCodes.Newobj, ctor);
+            var newIl = newBody.GetILGenerator();
+
+            newIl.Emit(OpCodes.Newobj, t.GetConstructor(Type.EmptyTypes));
 
             newIl.Emit(OpCodes.Ret);
 
@@ -60,31 +67,33 @@ namespace DevelopmentInProgress.DipType
 
             IEnumerable<PropertyInfo> propertyInfos = GetPropertyInfos<T>();
 
-            MethodInfo baseGetValue = typeof(TypeHelperBase).GetMethod("GetValue");
+            var baseGetValue = typeHelperType.GetMethod("GetValue");
 
-            MethodBuilder getValueBody = typeBuilder.DefineMethod(baseGetValue.Name,
+            var getValueBody = typeBuilder.DefineMethod(baseGetValue.Name,
                 baseGetValue.Attributes & ~MethodAttributes.Abstract,
                 typeof(object), new Type[] { typeof(object), typeof(string) });
 
-            ILGenerator getValueIL = getValueBody.GetILGenerator();
+            var getValueIL = getValueBody.GetILGenerator();
 
             GetSetValueIL<T>(getValueIL, propertyInfos, true);
 
             typeBuilder.DefineMethodOverride(getValueBody, baseGetValue);
 
-            MethodInfo baseSetValue = typeof(TypeHelperBase).GetMethod("SetValue");
+            var baseSetValue = typeHelperType.GetMethod("SetValue");
 
-            MethodBuilder setValueBody = typeBuilder.DefineMethod(baseSetValue.Name,
+            var setValueBody = typeBuilder.DefineMethod(baseSetValue.Name,
                 baseSetValue.Attributes & ~MethodAttributes.Abstract,
                 typeof(void), new Type[] { typeof(object), typeof(string), typeof(object) });
 
-            ILGenerator setValueIL = setValueBody.GetILGenerator();
+            var setValueIL = setValueBody.GetILGenerator();
 
             GetSetValueIL<T>(setValueIL, propertyInfos, false);
 
             typeBuilder.DefineMethodOverride(setValueBody, baseSetValue);
 
-            TypeHelperBase typeHelper = (TypeHelperBase)Activator.CreateInstance(typeBuilder.CreateType(), Type.EmptyTypes);
+            var typeHelper =
+                (TypeHelper<T>)
+                    Activator.CreateInstance(typeBuilder.CreateType().MakeGenericType(new Type[] {t}), Type.EmptyTypes);
 
             return typeHelper;
         }
