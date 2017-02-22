@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -20,6 +21,8 @@ namespace DevelopmentInProgress.DipType
 
     public static class TypeHelper
     {
+        private static readonly IDictionary<Type, object> cache = new ConcurrentDictionary<Type, object>();
+
         private static AssemblyBuilder assemblyBuilder;
 
         private static ModuleBuilder moduleBuilder;
@@ -27,6 +30,16 @@ namespace DevelopmentInProgress.DipType
         private static int counter;
 
         public static TypeHelper<T> CreateInstance<T>()
+        {
+            if (cache.ContainsKey(typeof(TypeHelper<T>)))
+            {
+                return (TypeHelper<T>)cache[typeof(TypeHelper<T>)];
+            }
+
+            return BuildInstance<T>();
+        }
+
+        private static TypeHelper<T> BuildInstance<T>()
         {
             var t = typeof (T);
             var typeHelperType = typeof(TypeHelper<T>);
@@ -91,14 +104,16 @@ namespace DevelopmentInProgress.DipType
 
             typeBuilder.DefineMethodOverride(setValueBody, baseSetValue);
 
-            var typeHelper =
+            var genericTypeHelper =
                 (TypeHelper<T>)
                     Activator.CreateInstance(typeBuilder.CreateType().MakeGenericType(new Type[] {t}), Type.EmptyTypes);
 
-            return typeHelper;
+            cache.Add(typeof(TypeHelper<T>), genericTypeHelper);
+
+            return genericTypeHelper;
         }
 
-        internal static IEnumerable<PropertyInfo> GetPropertyInfos<T>()
+        private static IEnumerable<PropertyInfo> GetPropertyInfos<T>()
         {
             var propertyInfoResults = new List<PropertyInfo>();
 
