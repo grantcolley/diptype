@@ -25,7 +25,7 @@ namespace DevelopmentInProgress.DipType.Test
             // Arrange
             var activityHelper1 = TypeHelper.CreateInstance<Activity>();
             var activityHelper2 = TypeHelper.CreateInstance<Activity>();
-
+            
             // Act
             var activity = activityHelper2.CreateInstance();
 
@@ -43,6 +43,9 @@ namespace DevelopmentInProgress.DipType.Test
             var updated = activityHelper2.GetValue(activity, "Updated");
 
             // Assert
+            Assert.AreEqual(TypeHelper.cache.Count, 1);
+            Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(TypeHelper<Activity>)));
+
             Assert.IsInstanceOfType(activityHelper1, typeof(TypeHelper<Activity>));
             Assert.IsInstanceOfType(activityHelper2, typeof(TypeHelper<Activity>));
 
@@ -65,7 +68,8 @@ namespace DevelopmentInProgress.DipType.Test
                 Name = "Read",
                 Level = 7.7,
                 IsActive = true,
-                Created = DateTime.Now
+                Created = DateTime.Now,
+                ActivityType = ActivityTypeEnum.Public
             };
 
             // Act
@@ -75,6 +79,7 @@ namespace DevelopmentInProgress.DipType.Test
             var isActive = activityHelper.GetValue(activity, "IsActive");
             var created = activityHelper.GetValue(activity, "Created");
             var updated = activityHelper.GetValue(activity, "Updated");
+            var activityType = activityHelper.GetValue(activity, "ActivityType");
 
             // Assert
             Assert.AreEqual(activity.Id, id);
@@ -83,6 +88,44 @@ namespace DevelopmentInProgress.DipType.Test
             Assert.AreEqual(activity.IsActive, isActive);
             Assert.AreEqual(activity.Created, created);
             Assert.AreEqual(activity.Updated, updated);
+            Assert.AreEqual(activity.ActivityType, activityType);
+        }
+
+        [TestMethod]
+        public void GetValue_GenericType()
+        {
+            // Arrange
+            var activityHelper = TypeHelper.CreateInstance<GenericActivity<string>>();
+            var activity = new GenericActivity<string>()
+            {
+                Id = 100,
+                Name = "Read",
+                Level = 7.7,
+                IsActive = true,
+                Created = DateTime.Now,
+                ActivityType = ActivityTypeEnum.Public,
+                GenericProperty = "Hello World"
+            };
+
+            // Act
+            var id = activityHelper.GetValue(activity, "Id");
+            var name = activityHelper.GetValue(activity, "Name");
+            var level = activityHelper.GetValue(activity, "Level");
+            var isActive = activityHelper.GetValue(activity, "IsActive");
+            var created = activityHelper.GetValue(activity, "Created");
+            var updated = activityHelper.GetValue(activity, "Updated");
+            var activityType = activityHelper.GetValue(activity, "ActivityType");
+            var genericProperty = activityHelper.GetValue(activity, "GenericProperty");
+
+            // Assert
+            Assert.AreEqual(activity.Id, id);
+            Assert.AreEqual(activity.Name, name);
+            Assert.AreEqual(activity.Level, level);
+            Assert.AreEqual(activity.IsActive, isActive);
+            Assert.AreEqual(activity.Created, created);
+            Assert.AreEqual(activity.Updated, updated);
+            Assert.AreEqual(activity.ActivityType, activityType);
+            Assert.AreEqual(activity.GenericProperty, genericProperty);
         }
 
         [TestMethod]
@@ -97,7 +140,8 @@ namespace DevelopmentInProgress.DipType.Test
                 Name = "Read",
                 Level = 7.7,
                 IsActive = true,
-                Created = DateTime.Now
+                Created = DateTime.Now,
+                ActivityType = ActivityTypeEnum.Public,
             };
 
             // Act
@@ -108,6 +152,7 @@ namespace DevelopmentInProgress.DipType.Test
             var created = activityHelper.GetValue(activity, "Created");
             var updated = activityHelper.GetValue(activity, "Updated");
             var test = activityHelper.GetValue(activity, "Test");
+            var activityType = activityHelper.GetValue(activity, "ActivityType");
 
             // Assert
         }
@@ -134,6 +179,34 @@ namespace DevelopmentInProgress.DipType.Test
             Assert.AreEqual(activity.IsActive, true);
             Assert.AreEqual(activity.Created, created);
             Assert.AreEqual(activity.Updated, null);
+        }
+
+        [TestMethod]
+        public void SetValue_GenericType()
+        {
+            // Arrange
+            var activityHelper = TypeHelper.CreateInstance<GenericActivity<string>>();
+            var activity = new GenericActivity<string>();
+            var created = DateTime.Now;
+
+            // Act
+            activityHelper.SetValue(activity, "Id", 100);
+            activityHelper.SetValue(activity, "Name", "Read");
+            activityHelper.SetValue(activity, "Level", 7.7);
+            activityHelper.SetValue(activity, "IsActive", true);
+            activityHelper.SetValue(activity, "Created", created);
+            activityHelper.SetValue(activity, "ActivityType", ActivityTypeEnum.Public);
+            activityHelper.SetValue(activity, "GenericProperty", "Hello World");
+
+            // Assert
+            Assert.AreEqual(activity.Id, 100);
+            Assert.AreEqual(activity.Name, "Read");
+            Assert.AreEqual(activity.Level, 7.7);
+            Assert.AreEqual(activity.IsActive, true);
+            Assert.AreEqual(activity.Created, created);
+            Assert.AreEqual(activity.Updated, null);
+            Assert.AreEqual(activity.ActivityType, ActivityTypeEnum.Public);
+            Assert.AreEqual(activity.GenericProperty, "Hello World");
         }
 
         [TestMethod]
@@ -170,6 +243,19 @@ namespace DevelopmentInProgress.DipType.Test
         }
 
         [TestMethod]
+        public void New_GenericType()
+        {
+            // Arrange
+            var activityHelper = TypeHelper.CreateInstance<GenericActivity<string>>();
+
+            // Act
+            var activity = activityHelper.CreateInstance();
+
+            // Assert
+            Assert.IsInstanceOfType(activity, typeof(GenericActivity<string>));
+        }
+
+        [TestMethod]
         public void New_SetValues()
         {
             // Arrange
@@ -177,9 +263,28 @@ namespace DevelopmentInProgress.DipType.Test
 
             // Act
             var activity = activityHelper.CreateInstance();
+            activityHelper.SetValue(activity, "Name", "Test");
 
             // Assert
             Assert.IsInstanceOfType(activity, typeof(Activity));
+            Assert.AreEqual(activity.Name, "Test");
+        }
+
+        [TestMethod]
+        public void New_GenericType_SetValues()
+        {
+            // Arrange
+            var activityHelper = TypeHelper.CreateInstance<GenericActivity<string>>();
+
+            // Act
+            var activity = activityHelper.CreateInstance();
+            activityHelper.SetValue(activity, "Name", "Test");
+            activityHelper.SetValue(activity, "GenericProperty", "Hello World");
+
+            // Assert
+            Assert.IsInstanceOfType(activity, typeof(GenericActivity<string>));
+            Assert.AreEqual(activity.Name, "Test");
+            Assert.AreEqual(activity.GenericProperty, "Hello World");
         }
     }
 }
