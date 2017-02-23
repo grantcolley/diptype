@@ -25,6 +25,7 @@ namespace DevelopmentInProgress.DipType.Test
             // Arrange
             var activityHelper1 = TypeHelper.CreateInstance<Activity>();
             var activityHelper2 = TypeHelper.CreateInstance<Activity>();
+            var genericActivity = TypeHelper.CreateInstance<GenericActivity<string>>();
             
             // Act
             var activity = activityHelper2.CreateInstance();
@@ -34,6 +35,7 @@ namespace DevelopmentInProgress.DipType.Test
             activityHelper2.SetValue(activity, "Level", 7.7);
             activityHelper2.SetValue(activity, "IsActive", true);
             activityHelper2.SetValue(activity, "Created", DateTime.Now);
+            activityHelper2.SetValue(activity, "ActivityType", ActivityTypeEnum.Shared);
 
             var id = activityHelper2.GetValue(activity, "Id");
             var name = activityHelper2.GetValue(activity, "Name");
@@ -41,13 +43,14 @@ namespace DevelopmentInProgress.DipType.Test
             var isActive = activityHelper2.GetValue(activity, "IsActive");
             var created = activityHelper2.GetValue(activity, "Created");
             var updated = activityHelper2.GetValue(activity, "Updated");
+            var activityType = activityHelper2.GetValue(activity, "ActivityType");
 
             // Assert
-            Assert.AreEqual(TypeHelper.cache.Count, 1);
+            Assert.AreEqual(TypeHelper.cache.Count, 2);
             Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(TypeHelper<Activity>)));
+            Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(TypeHelper<GenericActivity<string>>)));
 
-            Assert.IsInstanceOfType(activityHelper1, typeof(TypeHelper<Activity>));
-            Assert.IsInstanceOfType(activityHelper2, typeof(TypeHelper<Activity>));
+            Assert.AreEqual(activityHelper1, activityHelper2);
 
             Assert.AreEqual(activity.Id, id);
             Assert.AreEqual(activity.Name, name);
@@ -55,6 +58,7 @@ namespace DevelopmentInProgress.DipType.Test
             Assert.AreEqual(activity.IsActive, isActive);
             Assert.AreEqual(activity.Created, created);
             Assert.AreEqual(activity.Updated, updated);
+            Assert.AreEqual(activity.ActivityType, activityType);
         }
 
         [TestMethod]
