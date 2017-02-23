@@ -1,7 +1,16 @@
 # diptype
 Type helper for dynamically creating new instances of classes, getting and setting properties.
 
-## GetValue(object, string) 
+### CreateInstance()
+```C#
+            var activityHelper = TypeHelper.CreateInstance<Activity>();
+            var activity = activityHelper.CreateInstance();
+
+            Assert.IsInstanceOfType(activity, typeof(Activity));
+            Assert.IsInstanceOfType(activityHelper, typeof(TypeHelper<Activity>));
+```
+
+### GetValue(object, string) 
 ```C#
             // Arrange
             var activityHelper = TypeHelper.CreateInstance<Activity>();
@@ -33,7 +42,7 @@ Type helper for dynamically creating new instances of classes, getting and setti
             Assert.AreEqual(activity.ActivityType, activityType);
 ```
 
-## SetValue(object, string, object) 
+### SetValue(object, string, object) 
 ```C#
             // Arrange
             var activityHelper = TypeHelper.CreateInstance<Activity>();
