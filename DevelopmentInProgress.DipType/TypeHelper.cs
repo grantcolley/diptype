@@ -21,7 +21,7 @@ namespace DevelopmentInProgress.DipType
 
     public static class TypeHelper
     {
-        private static readonly IDictionary<Type, object> cache = new ConcurrentDictionary<Type, object>();
+        internal static readonly IDictionary<Type, object> cache = new ConcurrentDictionary<Type, object>();
 
         private static AssemblyBuilder assemblyBuilder;
 
