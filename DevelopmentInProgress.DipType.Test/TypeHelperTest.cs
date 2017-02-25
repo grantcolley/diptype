@@ -14,8 +14,10 @@ namespace DevelopmentInProgress.DipType.Test
             
             // Act
             var activityHelper = TypeHelper.CreateInstance<Activity>();
+            var activity = activityHelper.CreateInstance();
 
             // Assert
+            Assert.IsInstanceOfType(activity, typeof(Activity));
             Assert.IsInstanceOfType(activityHelper, typeof(TypeHelper<Activity>));
         }
 
@@ -47,8 +49,8 @@ namespace DevelopmentInProgress.DipType.Test
 
             // Assert
             Assert.AreEqual(TypeHelper.cache.Count, 2);
-            Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(TypeHelper<Activity>)));
-            Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(TypeHelper<GenericActivity<string>>)));
+            Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(Activity)));
+            Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(GenericActivity<string>)));
 
             Assert.AreEqual(activityHelper1, activityHelper2);
 
@@ -66,15 +68,14 @@ namespace DevelopmentInProgress.DipType.Test
         {
             // Arrange
             var activityHelper = TypeHelper.CreateInstance<Activity>();
-            var activity = new Activity()
-            {
-                Id = 100,
-                Name = "Read",
-                Level = 7.7,
-                IsActive = true,
-                Created = DateTime.Now,
-                ActivityType = ActivityTypeEnum.Public
-            };
+
+            var activity = activityHelper.CreateInstance();
+            activity.Id = 100;
+            activity.Name = "Read";
+            activity.Level = 7.7;
+            activity.IsActive = true;
+            activity.Created = DateTime.Now;
+            activity.ActivityType = ActivityTypeEnum.Public;
 
             // Act
             var id = activityHelper.GetValue(activity, "Id");
@@ -166,7 +167,8 @@ namespace DevelopmentInProgress.DipType.Test
         {
             // Arrange
             var activityHelper = TypeHelper.CreateInstance<Activity>();
-            var activity = new Activity();
+            var activity = activityHelper.CreateInstance();
+
             var created = DateTime.Now;
 
             // Act
@@ -175,6 +177,7 @@ namespace DevelopmentInProgress.DipType.Test
             activityHelper.SetValue(activity, "Level", 7.7);
             activityHelper.SetValue(activity, "IsActive", true);
             activityHelper.SetValue(activity, "Created", created);
+            activityHelper.SetValue(activity, "ActivityType", ActivityTypeEnum.Public);
 
             // Assert
             Assert.AreEqual(activity.Id, 100);
@@ -183,6 +186,7 @@ namespace DevelopmentInProgress.DipType.Test
             Assert.AreEqual(activity.IsActive, true);
             Assert.AreEqual(activity.Created, created);
             Assert.AreEqual(activity.Updated, null);
+            Assert.AreEqual(activity.ActivityType, ActivityTypeEnum.Public);
         }
 
         [TestMethod]
@@ -289,6 +293,61 @@ namespace DevelopmentInProgress.DipType.Test
             Assert.IsInstanceOfType(activity, typeof(GenericActivity<string>));
             Assert.AreEqual(activity.Name, "Test");
             Assert.AreEqual(activity.GenericProperty, "Hello World");
+        }
+
+        [TestMethod]
+        public void SupportedProperties()
+        {
+            // Arrange
+            var propertyInfos = TypeHelper.GetPropertyInfos<Activity>();
+            var supportedPropertyNames = String.Empty;
+            foreach (var propertyInfo in propertyInfos)
+            {
+                supportedPropertyNames += propertyInfo.Name + ",";
+            }
+
+            supportedPropertyNames = supportedPropertyNames.Remove(supportedPropertyNames.Length - 1, 1);
+
+            var activityHelper = TypeHelper.CreateInstance<Activity>();
+
+            // Act
+            var supportedProperties = activityHelper.SupportedProperties;
+
+            // Assert
+            Assert.AreEqual(supportedProperties, supportedPropertyNames);
+        }
+
+        [TestMethod]
+        public void Debug()
+        {
+            // Arrange
+            var activityHelper = Bug<Activity>();
+            var activity = activityHelper.CreateInstance();
+
+            var created = DateTime.Now;
+
+            // Act
+            activityHelper.SetValue(activity, "Id", 100);
+            activityHelper.SetValue(activity, "Name", "Read");
+            activityHelper.SetValue(activity, "Level", 7.7);
+            activityHelper.SetValue(activity, "IsActive", true);
+            activityHelper.SetValue(activity, "Created", created);
+            activityHelper.SetValue(activity, "ActivityType", ActivityTypeEnum.Public);
+
+            // Assert
+            Assert.AreEqual(activity.Id, 100);
+            Assert.AreEqual(activity.Name, "Read");
+            Assert.AreEqual(activity.Level, 7.7);
+            Assert.AreEqual(activity.IsActive, true);
+            Assert.AreEqual(activity.Created, created);
+            Assert.AreEqual(activity.Updated, null);
+            Assert.AreEqual(activity.ActivityType, ActivityTypeEnum.Public);
+        }
+
+        private TypeHelper<T> Bug<T>()
+        {
+            var typeHelper = TypeHelper.CreateInstance<T>();
+            return typeHelper;
         }
     }
 }
