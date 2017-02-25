@@ -17,6 +17,7 @@ namespace DevelopmentInProgress.DipType
         public abstract T CreateInstance();
         public abstract object GetValue(object obj, string propertyName);
         public abstract void SetValue(object obj, string propertyName, object value);
+        public virtual string SupportedProperties { get; set; }
     }
 
     public static class TypeHelper
@@ -31,18 +32,29 @@ namespace DevelopmentInProgress.DipType
 
         public static TypeHelper<T> CreateInstance<T>()
         {
-            if (cache.ContainsKey(typeof(TypeHelper<T>)))
+            if (cache.ContainsKey(typeof(T)))
             {
-                return (TypeHelper<T>)cache[typeof(TypeHelper<T>)];
+                return (TypeHelper<T>)cache[typeof(T)];
             }
 
-            return BuildInstance<T>();
+            var genericTypeHelper = BuildInstance<T>();
+            cache.Add(typeof(T), genericTypeHelper);
+            return genericTypeHelper;
         }
 
         private static TypeHelper<T> BuildInstance<T>()
         {
             var t = typeof (T);
             var typeHelperType = typeof(TypeHelper<T>);
+            IEnumerable<PropertyInfo> propertyInfos = GetPropertyInfos<T>();
+
+            var supportedPropertyNames = String.Empty;
+            foreach (var propertyInfo in propertyInfos)
+            {
+                supportedPropertyNames += propertyInfo.Name + ",";
+            }
+
+            supportedPropertyNames = supportedPropertyNames.Remove(supportedPropertyNames.Length - 1, 1);
 
             if (assemblyBuilder == null)
             {
@@ -65,6 +77,30 @@ namespace DevelopmentInProgress.DipType
                 GenericParameterAttributes.DefaultConstructorConstraint |
                 GenericParameterAttributes.ReferenceTypeConstraint);
 
+            var supportedPropertiesField = typeBuilder.DefineField("supportedProperties", typeof(string),
+                FieldAttributes.Private);
+
+            var ctor = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard,
+                Type.EmptyTypes);
+
+            var ctorIl = ctor.GetILGenerator();
+
+            ctorIl.Emit(OpCodes.Ldarg_0);
+            ctorIl.Emit(OpCodes.Ldstr, supportedPropertyNames);
+            ctorIl.Emit(OpCodes.Stfld, supportedPropertiesField);
+            ctorIl.Emit(OpCodes.Ret);
+
+            var supportedPropertiesGet = typeBuilder.DefineMethod("get_SupportedProperties",
+                MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig |
+                MethodAttributes.Virtual, typeof (string),
+                Type.EmptyTypes);
+
+            var supportedPropertiesGetIL = supportedPropertiesGet.GetILGenerator();
+
+            supportedPropertiesGetIL.Emit(OpCodes.Ldarg_0);
+            supportedPropertiesGetIL.Emit(OpCodes.Ldfld, supportedPropertiesField);
+            supportedPropertiesGetIL.Emit(OpCodes.Ret);
+
             var baseNew = typeHelperType.GetMethod("CreateInstance");
 
             var newBody = typeBuilder.DefineMethod(baseNew.Name, baseNew.Attributes & ~MethodAttributes.Abstract,
@@ -73,12 +109,9 @@ namespace DevelopmentInProgress.DipType
             var newIl = newBody.GetILGenerator();
 
             newIl.Emit(OpCodes.Newobj, t.GetConstructor(Type.EmptyTypes));
-
             newIl.Emit(OpCodes.Ret);
 
             typeBuilder.DefineMethodOverride(newBody, baseNew);
-
-            IEnumerable<PropertyInfo> propertyInfos = GetPropertyInfos<T>();
 
             var baseGetValue = typeHelperType.GetMethod("GetValue");
 
@@ -108,12 +141,10 @@ namespace DevelopmentInProgress.DipType
                 (TypeHelper<T>)
                     Activator.CreateInstance(typeBuilder.CreateType().MakeGenericType(new Type[] {t}), Type.EmptyTypes);
 
-            cache.Add(typeof(TypeHelper<T>), genericTypeHelper);
-
             return genericTypeHelper;
         }
 
-        private static IEnumerable<PropertyInfo> GetPropertyInfos<T>()
+        internal static IEnumerable<PropertyInfo> GetPropertyInfos<T>()
         {
             var propertyInfoResults = new List<PropertyInfo>();
 
@@ -187,9 +218,8 @@ namespace DevelopmentInProgress.DipType
             {
                 var property = propertyInfos.ElementAt(i);
 
-                il.MarkLabel(labels[i]);
-
-                il.Emit(OpCodes.Ldarg_1);
+                il.MarkLabel(labels[i]);           
+                il.Emit(OpCodes.Ldarg_1);                
 
                 if (isGet)
                 {
