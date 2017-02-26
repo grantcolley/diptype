@@ -58,10 +58,13 @@ namespace DevelopmentInProgress.DipType
 
             if (assemblyBuilder == null)
             {
-                assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                    new AssemblyName("TypeHelperAssembly"), AssemblyBuilderAccess.RunAndSave);
+                var name = "DipTypeAssembly";
+                var assemblyName = new AssemblyName(name);
 
-                moduleBuilder = assemblyBuilder.DefineDynamicModule("TypeHelperModule");
+                assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
+                    assemblyName, AssemblyBuilderAccess.RunAndSave);
+
+                moduleBuilder = assemblyBuilder.DefineDynamicModule(name, name);
             }
 
             var attribs = typeHelperType.Attributes;
@@ -121,7 +124,7 @@ namespace DevelopmentInProgress.DipType
 
             var getValueIL = getValueBody.GetILGenerator();
 
-            GetSetValueIL<T>(getValueIL, propertyInfos, true);
+            GetSetValueIL<T>(getValueIL, propertyInfos, supportedPropertiesField, true);
 
             typeBuilder.DefineMethodOverride(getValueBody, baseGetValue);
 
@@ -133,7 +136,7 @@ namespace DevelopmentInProgress.DipType
 
             var setValueIL = setValueBody.GetILGenerator();
 
-            GetSetValueIL<T>(setValueIL, propertyInfos, false);
+            GetSetValueIL<T>(setValueIL, propertyInfos, supportedPropertiesField, false);
 
             typeBuilder.DefineMethodOverride(setValueBody, baseSetValue);
 
@@ -192,7 +195,7 @@ namespace DevelopmentInProgress.DipType
             return Interlocked.Increment(ref counter);
         }
 
-        private static void GetSetValueIL<T>(ILGenerator il, IEnumerable<PropertyInfo> propertyInfos, bool isGet)
+        private static void GetSetValueIL<T>(ILGenerator il, IEnumerable<PropertyInfo> propertyInfos, FieldBuilder supportedPropertiesField, bool isGet)
         {
             var numberOfProperties = propertyInfos.Count();
 
@@ -210,7 +213,14 @@ namespace DevelopmentInProgress.DipType
                 il.Emit(OpCodes.Beq, labels[i]);
             }
 
+            var stringConcat = typeof (string).GetMethod("Concat", BindingFlags.Public | BindingFlags.Static,
+                Type.DefaultBinder, new Type[] { typeof(string), typeof(string), typeof(string) }, null);
+
             il.Emit(OpCodes.Ldarg_2);
+            il.Emit(OpCodes.Ldstr, ". Supported properties are: ");
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, supportedPropertiesField);
+            il.Emit(OpCodes.Call, stringConcat);
             il.Emit(OpCodes.Newobj, typeof(ArgumentOutOfRangeException).GetConstructor(new Type[] { typeof(string) }));
             il.Emit(OpCodes.Throw);
 
