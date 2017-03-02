@@ -1,6 +1,10 @@
 # diptype
+
 Type helper for dynamically creating new instances of classes, getting and setting properties.
- 
+
+## DynTypeHelper
+## TypeHelper 
+
 ```C#
             // Create the type helper.
             var activityHelper = TypeHelper.CreateInstance<Activity>();
