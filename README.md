@@ -7,7 +7,7 @@ Type helper for dynamically creating new instances of classes, getting and setti
 * [TypeHelper](#typehelper)
 
 ## DynTypeHelper
-
+Uses dynamic methods for creating new instances of an object and setting and getting property values.
 ```C#
             // Create the dynnamic type helper
             var activityHelper = DynTypeHelper.Get<Activity>();
