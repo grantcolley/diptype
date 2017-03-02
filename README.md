@@ -4,7 +4,7 @@ Type helper for dynamically creating new instances of classes, getting and setti
 
 ####Table of Contents
 * [DynTypeHelper](#dyntypehelper)
-* [TypeHaelper](#typehelper)
+* [TypeHelper](#typehelper)
 
 ## DynTypeHelper
 
