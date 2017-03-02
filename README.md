@@ -45,7 +45,7 @@ Dynamically creates and caches a type helper class with methods for creating new
 ```
 
 ## DynamicTypeHelper\<T>
-A generic type helper class that creates and caches dynamic methods at runtime for creating new instances of a type and get and set its properties.
+A generic type helper class that creates and caches dynamic methods at runtime for creating new instances of a type and gets and sets its properties faster than reflection.
 ```C#
             // Create the dynamic type helper
             var activityHelper = DynamicTypeHelper.Get<Activity>();
