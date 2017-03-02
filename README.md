@@ -6,11 +6,11 @@
 * [DynamicTypeHelper](#dynamictypehelper)
 * [TypeHelper](#typehelper)
 
-## DynTypeHelper
+## DynamicTypeHelper
 Uses dynamic methods to create new instances of a type and get and set properties faster than reflection.
 ```C#
             // Create the dynamic type helper
-            var activityHelper = DynTypeHelper.Get<Activity>();
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
             
             // The type helper can create instances of the type...
             var activity = activityHelper.CreateInstance();           
@@ -32,6 +32,9 @@ Uses dynamic methods to create new instances of a type and get and set propertie
             var updated = activityHelper.GetValue(activity, "Updated");
             var activityType = activityHelper.GetValue(activity, "ActivityType");
 
+            Assert.IsInstanceOfType(activity, typeof(Activity));
+            Assert.IsInstanceOfType(activityHelper, typeof(DynamicTypeHelper<Activity>));
+            
             Assert.AreEqual(activity.Id, id);
             Assert.AreEqual(activity.Name, name);
             Assert.AreEqual(activity.Level, level);
@@ -45,7 +48,7 @@ Uses dynamic methods to create new instances of a type and get and set propertie
 Uses dynamic methods to create new instances of a type and get and set properties faster than reflection.
 ```C#
             // Create the type helper
-            var activityHelper = DynTypeHelper.Get<Activity>();
+            var activityHelper = TypeHelper.Get<Activity>();
             
             // The type helper can create instances of the type...
             var activity = activityHelper.CreateInstance();           
@@ -67,6 +70,9 @@ Uses dynamic methods to create new instances of a type and get and set propertie
             var updated = activityHelper.GetValue(activity, "Updated");
             var activityType = activityHelper.GetValue(activity, "ActivityType");
 
+            Assert.IsInstanceOfType(activity, typeof(Activity));
+            Assert.IsInstanceOfType(activityHelper, typeof(TypeHelper<Activity>));
+            
             Assert.AreEqual(activity.Id, id);
             Assert.AreEqual(activity.Name, name);
             Assert.AreEqual(activity.Level, level);
