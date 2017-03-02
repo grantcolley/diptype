@@ -4,13 +4,13 @@ Type helper for dynamically creating new instances of classes, getting and setti
 
 ####Table of Contents
 * [DynTypeHelper](#dyntypehelper)
-* [TypeHelper](#typehelper)
+* [TypeHaelper](#typehelper)
 
 ## DynTypeHelper
 
 ```C#
-            // Create the type helper.
-            var activityHelper = DynTypeHelper.GetZ<Activity>();
+            // Create the dynnamic type helper
+            var activityHelper = DynTypeHelper.Get<Activity>();
             
             // The type helper can create instances of the type...
             var activity = activityHelper.CreateInstance();           
