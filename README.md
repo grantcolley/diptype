@@ -3,10 +3,10 @@
 *Faster than reflection!* dynamically created type helpers that using intermediate language to create new instances of a type and get and set properties faster than reflection.
 
 ####Table of Contents
-* [TypeHelper<T>](#typehelper)
-* [DynamicTypeHelper<T>](#dynamictypehelper)
+* [TypeHelper\<T>](#typehelper)
+* [DynamicTypeHelper\<T>](#dynamictypehelper)
 
-## TypeHelper
+## TypeHelper\<T>
 Dynamically creates and caches a type helper class with methods for creating new instances of a type and gets and sets its properties faster than reflection.
 ```C#
             // Create the type helper
@@ -44,7 +44,7 @@ Dynamically creates and caches a type helper class with methods for creating new
             Assert.AreEqual(activity.ActivityType, activityType);
 ```
 
-## DynamicTypeHelper
+## DynamicTypeHelper\<T>
 A generic type helper class that creates and caches dynamic methods at runtime for creating new instances of a type and get and set its properties.
 ```C#
             // Create the dynamic type helper
