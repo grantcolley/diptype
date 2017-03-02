@@ -3,8 +3,8 @@
 *Faster than reflection!* dynamically created type helpers that using intermediate language to create new instances of a type and get and set properties faster than reflection.
 
 ####Table of Contents
-* [TypeHelper](#typehelper)
-* [DynamicTypeHelper](#dynamictypehelper)
+* [TypeHelper<T>](#typehelper)
+* [DynamicTypeHelper<T>](#dynamictypehelper)
 
 ## TypeHelper
 Dynamically creates and caches a type helper class with methods for creating new instances of a type and gets and sets its properties faster than reflection.
