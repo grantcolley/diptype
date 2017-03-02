@@ -30,7 +30,7 @@ namespace DevelopmentInProgress.DipType
 
         private static int counter;
 
-        public static TypeHelper<T> CreateInstance<T>()
+        public static TypeHelper<T> Get<T>()
         {
             if (cache.ContainsKey(typeof(T)))
             {
@@ -46,7 +46,7 @@ namespace DevelopmentInProgress.DipType
         {
             var t = typeof (T);
             var typeHelperType = typeof(TypeHelper<T>);
-            IEnumerable<PropertyInfo> propertyInfos = GetPropertyInfos<T>();
+            IEnumerable<PropertyInfo> propertyInfos = PropertyHelper.GetPropertyInfos<T>();
 
             var supportedPropertyNames = String.Empty;
             foreach (var propertyInfo in propertyInfos)
@@ -62,9 +62,9 @@ namespace DevelopmentInProgress.DipType
                 var assemblyName = new AssemblyName(name);
 
                 assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                    assemblyName, AssemblyBuilderAccess.RunAndSave);
+                    assemblyName, AssemblyBuilderAccess.Run);
 
-                moduleBuilder = assemblyBuilder.DefineDynamicModule(name, name);
+                moduleBuilder = assemblyBuilder.DefineDynamicModule("TypeHelperModule");
             }
 
             var attribs = typeHelperType.Attributes;
@@ -145,49 +145,6 @@ namespace DevelopmentInProgress.DipType
                     Activator.CreateInstance(typeBuilder.CreateType().MakeGenericType(new Type[] {t}), Type.EmptyTypes);
 
             return genericTypeHelper;
-        }
-
-        internal static IEnumerable<PropertyInfo> GetPropertyInfos<T>()
-        {
-            var propertyInfoResults = new List<PropertyInfo>();
-
-            PropertyInfo[] propertyInfos = typeof (T).GetProperties();
-
-            foreach (var propertyInfo in propertyInfos)
-            {
-                if (UnsupportedProperty(propertyInfo))
-                {
-                    continue;
-                }
-
-                propertyInfoResults.Add(propertyInfo);
-            }
-
-            return propertyInfoResults;
-        }
-
-        private static bool UnsupportedProperty(PropertyInfo propertyInfo)
-        {
-            // Skip non-public properties and properties that are either 
-            // classes (but not strings), interfaces, lists, generic 
-            // lists or arrays.
-            var propertyType = propertyInfo.PropertyType;
-
-            if (propertyType != typeof(string)
-                && (propertyType.IsClass
-                    || propertyType.IsInterface
-                    || propertyType.IsArray
-                    || propertyType.GetInterfaces()
-                        .Any(
-                            i =>
-                                (i.GetTypeInfo().Name.Equals(typeof(IEnumerable).Name)
-                                 || (i.IsGenericType &&
-                                     i.GetGenericTypeDefinition().Name.Equals(typeof(IEnumerable<>).Name))))))
-            {
-                return true;
-            }
-
-            return false;
         }
 
         private static int GetNextCounterValue()
