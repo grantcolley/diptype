@@ -2,8 +2,11 @@
 
 Type helper for dynamically creating new instances of classes, getting and setting properties.
 
+####Table of Contents
+* [DynTypeHelper](#dyntypehelper)
+* [TypeHelper](#typehelper)
+
 ## DynTypeHelper
-## TypeHelper 
 
 ```C#
             // Create the type helper.
