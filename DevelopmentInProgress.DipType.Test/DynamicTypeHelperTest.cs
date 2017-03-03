@@ -5,30 +5,30 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace DevelopmentInProgress.DipType.Test
 {
     [TestClass]
-    public class TypeHelperTest
+    public class DynamicTypeHelperTest
     {
         [TestMethod]
         public void CreateInstance()
         {
             // Arrange
-            
+
             // Act
-            var activityHelper = TypeHelper.Get<Activity>();
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
             var activity = activityHelper.CreateInstance();
 
             // Assert
             Assert.IsInstanceOfType(activity, typeof(Activity));
-            Assert.IsInstanceOfType(activityHelper, typeof(TypeHelper<Activity>));
+            Assert.IsInstanceOfType(activityHelper, typeof(DynamicTypeHelper<Activity>));
         }
 
         [TestMethod]
         public void CreateChachedInstance()
         {
             // Arrange
-            var activityHelper1 = TypeHelper.Get<Activity>();
-            var activityHelper2 = TypeHelper.Get<Activity>();
-            var genericActivity = TypeHelper.Get<GenericActivity<string>>();
-            
+            var activityHelper1 = DynamicTypeHelper.Get<Activity>();
+            var activityHelper2 = DynamicTypeHelper.Get<Activity>();
+            var genericActivity = DynamicTypeHelper.Get<GenericActivity<string>>();
+
             // Act
             var activity = activityHelper2.CreateInstance();
 
@@ -48,9 +48,49 @@ namespace DevelopmentInProgress.DipType.Test
             var activityType = activityHelper2.GetValue(activity, "ActivityType");
 
             // Assert
-            Assert.AreEqual(TypeHelper.cache.Count, 2);
-            Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(Activity)));
-            Assert.IsTrue(TypeHelper.cache.ContainsKey(typeof(GenericActivity<string>)));
+            Assert.AreEqual(DynamicTypeHelper.cache.Count, 2);
+            Assert.IsTrue(DynamicTypeHelper.cache.ContainsKey(typeof(Activity)));
+            Assert.IsTrue(DynamicTypeHelper.cache.ContainsKey(typeof(GenericActivity<string>)));
+
+            Assert.AreEqual(activityHelper1, activityHelper2);
+
+            Assert.AreEqual(activity.Id, id);
+            Assert.AreEqual(activity.Name, name);
+            Assert.AreEqual(activity.Level, level);
+            Assert.AreEqual(activity.IsActive, isActive);
+            Assert.AreEqual(activity.Created, created);
+            Assert.AreEqual(activity.Updated, updated);
+            Assert.AreEqual(activity.ActivityType, activityType);
+        }
+
+        [TestMethod]
+        public void DynamicTypeHelper_Get_OverloadedConstructor()
+        {
+            // Arrange
+            var properties = PropertyHelper.GetPropertyInfos<Activity>();
+            var activityHelper1 = DynamicTypeHelper.Get<Activity>(properties);
+            var activityHelper2 = DynamicTypeHelper.Get<Activity>();
+
+            // Act
+            var activity = activityHelper2.CreateInstance();
+
+            activityHelper2.SetValue(activity, "Id", 100);
+            activityHelper2.SetValue(activity, "Name", "Read");
+            activityHelper2.SetValue(activity, "Level", 7.7);
+            activityHelper2.SetValue(activity, "IsActive", true);
+            activityHelper2.SetValue(activity, "Created", DateTime.Now);
+            activityHelper2.SetValue(activity, "ActivityType", ActivityTypeEnum.Shared);
+
+            var id = activityHelper2.GetValue(activity, "Id");
+            var name = activityHelper2.GetValue(activity, "Name");
+            var level = activityHelper2.GetValue(activity, "Level");
+            var isActive = activityHelper2.GetValue(activity, "IsActive");
+            var created = activityHelper2.GetValue(activity, "Created");
+            var updated = activityHelper2.GetValue(activity, "Updated");
+            var activityType = activityHelper2.GetValue(activity, "ActivityType");
+
+            // Assert
+            Assert.IsTrue(DynamicTypeHelper.cache.ContainsKey(typeof(Activity)));
 
             Assert.AreEqual(activityHelper1, activityHelper2);
 
@@ -67,7 +107,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void GetValue()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<Activity>();
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
 
             var activity = activityHelper.CreateInstance();
             activity.Id = 100;
@@ -100,7 +140,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void GetValue_GenericType()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<GenericActivity<string>>();
+            var activityHelper = DynamicTypeHelper.Get<GenericActivity<string>>();
             var activity = new GenericActivity<string>()
             {
                 Id = 100,
@@ -138,7 +178,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void GetValue_ExpectedException()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<Activity>();
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
             var activity = new Activity()
             {
                 Id = 100,
@@ -166,7 +206,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void SetValue()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<Activity>();
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
             var activity = activityHelper.CreateInstance();
 
             var created = DateTime.Now;
@@ -193,7 +233,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void SetValue_GenericType()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<GenericActivity<string>>();
+            var activityHelper = DynamicTypeHelper.Get<GenericActivity<string>>();
             var activity = new GenericActivity<string>();
             var created = DateTime.Now;
 
@@ -222,7 +262,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void SetValue_ExpectedException()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<Activity>();
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
             var activity = new Activity();
             var created = DateTime.Now;
 
@@ -241,7 +281,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void New()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<Activity>();
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
 
             // Act
             var activity = activityHelper.CreateInstance();
@@ -254,7 +294,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void New_GenericType()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<GenericActivity<string>>();
+            var activityHelper = DynamicTypeHelper.Get<GenericActivity<string>>();
 
             // Act
             var activity = activityHelper.CreateInstance();
@@ -267,7 +307,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void New_SetValues()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<Activity>();
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
 
             // Act
             var activity = activityHelper.CreateInstance();
@@ -282,7 +322,7 @@ namespace DevelopmentInProgress.DipType.Test
         public void New_GenericType_SetValues()
         {
             // Arrange
-            var activityHelper = TypeHelper.Get<GenericActivity<string>>();
+            var activityHelper = DynamicTypeHelper.Get<GenericActivity<string>>();
 
             // Act
             var activity = activityHelper.CreateInstance();
