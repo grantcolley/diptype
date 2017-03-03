@@ -2,14 +2,14 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ivlk4a45y2kutj67?svg=true)](https://ci.appveyor.com/project/grantcolley/diptype)
 
-***Faster than reflection!*** dynamically created type helpers that using intermediate language to create new instances of a type and get and set properties faster than reflection.
+Dynamically created type helpers that using intermediate language to create new instances of a type and get and set properties faster than reflection.
 
 ####Table of Contents
 * [TypeHelper\<T>](#typehelper)
 * [DynamicTypeHelper\<T>](#dynamictypehelper)
 
 ## TypeHelper\<T>
-Dynamically creates and caches a type helper class with methods for creating new instances of a type and gets and sets its properties *faster than reflection*.
+Dynamically creates and caches a type helper class with methods for creating new instances of a type and gets and sets its properties.
 ```C#
             // Create the type helper
             var activityHelper = TypeHelper.Get<Activity>();
@@ -47,7 +47,7 @@ Dynamically creates and caches a type helper class with methods for creating new
 ```
 
 ## DynamicTypeHelper\<T>
-A generic type helper class that creates and caches dynamic methods at runtime for creating new instances of a type and gets and sets its properties *faster than reflection*.
+A generic type helper class that creates and caches dynamic methods at runtime for creating new instances of a type and gets and sets its properties.
 ```C#
             // Create the dynamic type helper
             var activityHelper = DynamicTypeHelper.Get<Activity>();
