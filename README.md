@@ -1,5 +1,7 @@
 # diptype
 
+[![Build status](https://ci.appveyor.com/api/github/webhook?id=ivlk4a45y2kutj67)](https://ci.appveyor.com/project/grantcolley/diptype)
+
 ***Faster than reflection!*** dynamically created type helpers that using intermediate language to create new instances of a type and get and set properties faster than reflection.
 
 ####Table of Contents
