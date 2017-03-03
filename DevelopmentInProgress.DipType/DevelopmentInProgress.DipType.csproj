@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicTypeHelper.cs" />
+    <Compile Include="PropertyHelper.cs" />
     <Compile Include="TypeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
