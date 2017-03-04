@@ -54,6 +54,7 @@
     <Compile Include="ActivityType.cs" />
     <Compile Include="DynamicTypeHelperTest.cs" />
     <Compile Include="GenericActivity.cs" />
+    <Compile Include="PerformanceTest.cs" />
     <Compile Include="PropertyHelperTest.cs" />
     <Compile Include="TypeHelperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
