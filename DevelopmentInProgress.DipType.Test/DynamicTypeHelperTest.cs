@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DevelopmentInProgress.DipMapper.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -275,6 +276,25 @@ namespace DevelopmentInProgress.DipType.Test
             activityHelper.SetValue(activity, "Test", true);
 
             // Assert
+        }
+
+        [TestMethod]
+        public void PropertyNames()
+        {
+            // Arrange
+            var activityHelper = DynamicTypeHelper.Get<Activity>();
+
+            // Act
+            
+            // Assert
+            Assert.AreEqual(activityHelper.SupportedProperties.Count(), 7);
+            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Id"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Name"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Level"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Contains("IsActive"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Created"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Updated"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Contains("ActivityType"));
         }
 
         [TestMethod]

@@ -8,23 +8,27 @@ using System.Threading;
 
 namespace DevelopmentInProgress.DipType
 {
-    internal class DynamicTypeHelper<T>
+    public class DynamicTypeHelper<T>
     {
         private readonly Dictionary<string, Func<T, object>> getters;
         private readonly Dictionary<string, Action<T, object>> setters;
 
         public DynamicTypeHelper(Func<T> createInstance,
             Dictionary<string, Func<T, object>> getters,
-            Dictionary<string, Action<T, object>> setters)
+            Dictionary<string, Action<T, object>> setters,
+            IEnumerable<string> supportedProperties)
         {
-            CreateInstance = createInstance;
             this.getters = getters;
             this.setters = setters;
+            CreateInstance = createInstance;
+            SupportedProperties = supportedProperties;
         }
 
-        internal Func<T> CreateInstance { get; private set; }
+        public Func<T> CreateInstance { get; private set; }
 
-        internal void SetValue(T target, string fieldName, object value)
+        public IEnumerable<string> SupportedProperties { get; private set; }
+
+        public void SetValue(T target, string fieldName, object value)
         {
             if (setters.ContainsKey(fieldName))
             {
@@ -35,7 +39,7 @@ namespace DevelopmentInProgress.DipType
             throw new ArgumentOutOfRangeException(fieldName + " not supported.");
         }
 
-        internal object GetValue(T target, string fieldName)
+        public object GetValue(T target, string fieldName)
         {
             if (setters.ContainsKey(fieldName))
             {
@@ -46,7 +50,7 @@ namespace DevelopmentInProgress.DipType
         }
     }
 
-    internal static class DynamicTypeHelper
+    public static class DynamicTypeHelper
     {
         internal static readonly IDictionary<Type, object> cache = new ConcurrentDictionary<Type, object>();
 
@@ -82,6 +86,7 @@ namespace DevelopmentInProgress.DipType
         private static DynamicTypeHelper<T> CreateTypeHelper<T>(IEnumerable<PropertyInfo> propertyInfos) where T : class, new()
         {
             var capacity = propertyInfos.Count() - 1;
+            var propertyNames = new List<string>();
             var getters = new Dictionary<string, Func<T, object>>(capacity);
             var setters = new Dictionary<string, Action<T, object>>(capacity);
 
@@ -89,11 +94,12 @@ namespace DevelopmentInProgress.DipType
 
             foreach (var propertyInfo in propertyInfos)
             {
+                propertyNames.Add(propertyInfo.Name);
                 getters.Add(propertyInfo.Name, GetValue<T>(propertyInfo));
                 setters.Add(propertyInfo.Name, SetValue<T>(propertyInfo));
             }
 
-            return new DynamicTypeHelper<T>(createInstance, getters, setters);
+            return new DynamicTypeHelper<T>(createInstance, getters, setters, propertyNames);
         }
 
         private static Func<T> CreateInstance<T>() where T : class, new()
