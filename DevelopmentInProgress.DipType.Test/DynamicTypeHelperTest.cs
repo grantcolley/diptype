@@ -288,13 +288,13 @@ namespace DevelopmentInProgress.DipType.Test
             
             // Assert
             Assert.AreEqual(activityHelper.SupportedProperties.Count(), 7);
-            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Id"));
-            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Name"));
-            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Level"));
-            Assert.IsTrue(activityHelper.SupportedProperties.Contains("IsActive"));
-            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Created"));
-            Assert.IsTrue(activityHelper.SupportedProperties.Contains("Updated"));
-            Assert.IsTrue(activityHelper.SupportedProperties.Contains("ActivityType"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Any(p => p.Name == "Id"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Any(p => p.Name == "Name"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Any(p => p.Name == "Level"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Any(p => p.Name == "IsActive"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Any(p => p.Name == "Created"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Any(p => p.Name == "Updated"));
+            Assert.IsTrue(activityHelper.SupportedProperties.Any(p => p.Name == "ActivityType"));
         }
 
         [TestMethod]

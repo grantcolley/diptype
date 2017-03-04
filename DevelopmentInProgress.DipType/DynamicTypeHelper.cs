@@ -16,7 +16,7 @@ namespace DevelopmentInProgress.DipType
         public DynamicTypeHelper(Func<T> createInstance,
             Dictionary<string, Func<T, object>> getters,
             Dictionary<string, Action<T, object>> setters,
-            IEnumerable<string> supportedProperties)
+            IEnumerable<PropertyInfo> supportedProperties)
         {
             this.getters = getters;
             this.setters = setters;
@@ -26,7 +26,7 @@ namespace DevelopmentInProgress.DipType
 
         public Func<T> CreateInstance { get; private set; }
 
-        public IEnumerable<string> SupportedProperties { get; private set; }
+        public IEnumerable<PropertyInfo> SupportedProperties { get; private set; }
 
         public void SetValue(T target, string fieldName, object value)
         {
@@ -86,7 +86,6 @@ namespace DevelopmentInProgress.DipType
         private static DynamicTypeHelper<T> CreateTypeHelper<T>(IEnumerable<PropertyInfo> propertyInfos) where T : class, new()
         {
             var capacity = propertyInfos.Count() - 1;
-            var propertyNames = new List<string>();
             var getters = new Dictionary<string, Func<T, object>>(capacity);
             var setters = new Dictionary<string, Action<T, object>>(capacity);
 
@@ -94,12 +93,11 @@ namespace DevelopmentInProgress.DipType
 
             foreach (var propertyInfo in propertyInfos)
             {
-                propertyNames.Add(propertyInfo.Name);
                 getters.Add(propertyInfo.Name, GetValue<T>(propertyInfo));
                 setters.Add(propertyInfo.Name, SetValue<T>(propertyInfo));
             }
 
-            return new DynamicTypeHelper<T>(createInstance, getters, setters, propertyNames);
+            return new DynamicTypeHelper<T>(createInstance, getters, setters, propertyInfos);
         }
 
         private static Func<T> CreateInstance<T>() where T : class, new()
