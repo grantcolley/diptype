@@ -78,8 +78,7 @@ A generic type helper class that creates and caches dynamic methods at runtime f
             var activityHelper = DynamicTypeHelper.Get<Activity>();
             
             // The type helper can create instances of the type...
-
-var activity = activityHelper.CreateInstance();           
+            var activity = activityHelper.CreateInstance();           
             
             // The type helper can set property values on the object.
             activityHelper.SetValue(activity, "Id", 100);
