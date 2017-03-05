@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ivlk4a45y2kutj67?svg=true)](https://ci.appveyor.com/project/grantcolley/diptype)
 
-Dynamically created type helpers that using intermediate language to create new instances of a type and get and set properties.
+Dynamically create type helpers that use intermediate language to create new instances of a type and get and set properties.
 
 ####Table of Contents
 * [Example Usage](#example-usage)
