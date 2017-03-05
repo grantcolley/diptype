@@ -88,13 +88,7 @@ A generic type helper class that creates and caches dynamic methods at runtime f
             activityHelper.SetValue(activity, "Created", created);
             activityHelper.SetValue(activity, "ActivityType", ActivityTypeEnum.Public);
             
-> **_WARNING:_**
-> Initialising a sub state directly, without first initialising its parent 
-> will result in the parent’s status being updated to Initialised without 
-> running its **CanInitialise** predicate or its **OnEntry** and **OnStatusChanged** actions. 
-> Consider setting the sub state to initialise with parent and then initialise 
-> the parent instead. This way all initialisation predicates and actions will 
-> be run for both the parent and the child.            // The type helper can get property values from the object.
+            // The type helper can get property values from the object.
             var id = activityHelper.GetValue(activity, "Id");
             var name = activityHelper.GetValue(activity, "Name");
             var level = activityHelper.GetValue(activity, "Level");
@@ -161,49 +155,3 @@ TypeHelper         - 00:00:00.1490487
 DynamicTypeHelper  - 00:00:00.3155219
 Reflection         - 00:00:00.5737295
 ```
-
-> What can be seen from the results below is that while there is an initial performance cost creating the TypeHelper and 
-> DynamicTypeHelper,
-> an immediate performance benefit can be seen from creating and using the second instance of the type. This is because the helper for 
-> the type is cached for re-use.
->
-> 1 x Activity
-> TypeHelper         - 00:00:00.0085030
-> DynamicTypeHelper  - 00:00:00.0055950
-> Reflection         - 00:00:00.0011311
->
->
-> 2 x Activity
-> TypeHelper         - 00:00:00.0000072
-> DynamicTypeHelper  - 00:00:00.0000081
-> Reflection         - 00:00:00.0000316
->
->
-> 10 x Activity
-> TypeHelper         - 00:00:00.0000162
-> DynamicTypeHelper  - 00:00:00.0000290
-> Reflection         - 00:00:00.0000551
->
->
-> 100 x Activity
-> TypeHelper         - 00:00:00.0001351
-> DynamicTypeHelper  - 00:00:00.0003027
-> Reflection         - 00:00:00.0005247
->
->
-> 1000 x Activity
-> TypeHelper         - 00:00:00.0014959
-> DynamicTypeHelper  - 00:00:00.0038078
-> Reflection         - 00:00:00.0054248
->
->
-> 10000 x Activity
-> TypeHelper         - 00:00:00.0152330
-> DynamicTypeHelper  - 00:00:00.0349026
-> Reflection         - 00:00:00.0596197
->
->
-> 100000 x Activity
-> TypeHelper         - 00:00:00.1490487
-> DynamicTypeHelper  - 00:00:00.3155219
-> Reflection         - 00:00:00.5737295
