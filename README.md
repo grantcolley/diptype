@@ -8,6 +8,29 @@ Dynamically created type helpers that using intermediate language to create new 
 * [TypeHelper\<T>](#typehelper)
 * [DynamicTypeHelper\<T>](#dynamictypehelper)
 
+## Example Usage
+The following example shows a method reading data and mapping it to fields of a type unknown at design time. The full code for this example can be seen at xxx.
+```C#
+            public virtual T ReadData<T>(IDataReader reader) where T : class, new()
+            {
+                var typeHelper = DynamicTypeHelper.Get<T>();
+                var t = typeHelper.CreateInstance();
+
+                foreach (var propertyInfo in typeHelper.SupportedProperties)
+                {
+                    var value = reader[propertyInfo.Name];
+                    if (value == DBNull.Value)
+                    {
+                        value = null;
+                    }
+
+                    typeHelper.SetValue(t, propertyInfo.Name, value);                    
+                }
+
+                return t;
+            }
+```
+
 ## TypeHelper\<T>
 Dynamically creates and caches a type helper class with methods for creating new instances of a type and gets and sets its properties.
 ```C#
