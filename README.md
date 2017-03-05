@@ -113,26 +113,36 @@ A generic type helper class that creates and caches dynamic methods at runtime f
 The following shows the results of a simple test where an instance of the Activity class is created and it's properties set and read *n* number of times. The test can be found in PerformanceTest.cs.
 
 ```C#
+// The time it takes to create an instance of the
+// TypeHelper, DynamicTypeHelper or, in the case of 
+// reflection, a list of PropertyInfo's for the same object. 
+// NOTE: caching is used when creating a TypeHelper or DynamicTypeHelper
+// so this is a one off performance hit.
+TypeHelper         - 00:00:00.0050471
+DynamicTypeHelper  - 00:00:00.0038052
+Reflection         - 00:00:00.0000226
+
+
 1 x Activity
-TypeHelper         - 00:00:00.0027032
-DynamicTypeHelper  - 00:00:00.0017482
-Reflection         - 00:00:00.0010965
+TypeHelper         - 00:00:00.0027211
+DynamicTypeHelper  - 00:00:00.0019163
+Reflection         - 00:00:00.0012029
 
 
 1000 x Activity
-TypeHelper         - 00:00:00.0014561
-DynamicTypeHelper  - 00:00:00.0032925
-Reflection         - 00:00:00.0054401
+TypeHelper         - 00:00:00.0017709
+DynamicTypeHelper  - 00:00:00.0029563
+Reflection         - 00:00:00.0053687
 
 
 10000 x Activity
-TypeHelper         - 00:00:00.0153083
-DynamicTypeHelper  - 00:00:00.0444042
-Reflection         - 00:00:00.1129940
+TypeHelper         - 00:00:00.0172054
+DynamicTypeHelper  - 00:00:00.0367415
+Reflection         - 00:00:00.0601286
 
 
 100000 x Activity
-TypeHelper         - 00:00:00.1736192
-DynamicTypeHelper  - 00:00:00.3503984
-Reflection         - 00:00:00.6266993
+TypeHelper         - 00:00:00.1596597
+DynamicTypeHelper  - 00:00:00.3159577
+Reflection         - 00:00:00.5803338
 ```
