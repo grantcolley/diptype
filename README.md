@@ -78,7 +78,8 @@ A generic type helper class that creates and caches dynamic methods at runtime f
             var activityHelper = DynamicTypeHelper.Get<Activity>();
             
             // The type helper can create instances of the type...
-            var activity = activityHelper.CreateInstance();           
+
+var activity = activityHelper.CreateInstance();           
             
             // The type helper can set property values on the object.
             activityHelper.SetValue(activity, "Id", 100);
@@ -111,6 +112,7 @@ A generic type helper class that creates and caches dynamic methods at runtime f
 
 ## Performance Tests
 The following shows the results of a simple test where an instance of the Activity class is created and it's properties set and read *n* number of times. The test can be found in *PerformanceTest.cs*.
+
 What can be seen from the results below is that while there is an initial performance cost creating the **TypeHelper** and **DynamicTypeHelper**, the helper for a given type is cached for re-use and an immediate performance benefit can be seen from creating and using the second instance of the type onwards.
 ```C#
 1 x Activity
