@@ -15,29 +15,96 @@ namespace DevelopmentInProgress.DipType.Test
         public void Run()
         {
             // Arrange
-            var typeHelper = TypeHelper.Get<Activity>();
-            var dynamicTypeHelper = DynamicTypeHelper.Get<Activity>();
-            var properties = PropertyHelper.GetPropertyInfos<Activity>();
-
             var swTypeHelper = new Stopwatch();
             var swDynamicTypeHelper = new Stopwatch();
             var swReflection = new Stopwatch();
 
             // Act
             swTypeHelper.Start();
+            var typeHelper = TypeHelper.Get<Activity>();
             RunTypeHelper(typeHelper, 1);
             var typeHelperTime = swTypeHelper.Elapsed;
-
-
+            
             swDynamicTypeHelper.Start();
+            var dynamicTypeHelper = DynamicTypeHelper.Get<Activity>();
             RunDynamicTypeHelper(dynamicTypeHelper, 1);
             var dynamicTypeHelperTime = swDynamicTypeHelper.Elapsed;
 
             swReflection.Start();
+            var properties = PropertyHelper.GetPropertyInfos<Activity>();
             RunReflection(properties, 1);
             var reflectionTime = swReflection.Elapsed;
 
             Debug.Print("1 x Activity");
+            Debug.Print("TypeHelper         - {0}", typeHelperTime);
+            Debug.Print("DynamicTypeHelper  - {0}", dynamicTypeHelperTime);
+            Debug.Print("Reflection         - {0}", reflectionTime);
+
+            Debug.Print("");
+            Debug.Print("");
+
+            swTypeHelper.Reset();
+            swTypeHelper.Start();
+            RunTypeHelper(typeHelper, 2);
+            typeHelperTime = swTypeHelper.Elapsed;
+
+            swDynamicTypeHelper.Reset();
+            swDynamicTypeHelper.Start();
+            RunDynamicTypeHelper(dynamicTypeHelper, 2);
+            dynamicTypeHelperTime = swDynamicTypeHelper.Elapsed;
+
+            swReflection.Reset();
+            swReflection.Start();
+            RunReflection(properties, 2);
+            reflectionTime = swReflection.Elapsed;
+
+            Debug.Print("2 x Activity");
+            Debug.Print("TypeHelper         - {0}", typeHelperTime);
+            Debug.Print("DynamicTypeHelper  - {0}", dynamicTypeHelperTime);
+            Debug.Print("Reflection         - {0}", reflectionTime);
+
+            Debug.Print("");
+            Debug.Print("");
+
+            swTypeHelper.Reset();
+            swTypeHelper.Start();
+            RunTypeHelper(typeHelper, 10);
+            typeHelperTime = swTypeHelper.Elapsed;
+
+            swDynamicTypeHelper.Reset();
+            swDynamicTypeHelper.Start();
+            RunDynamicTypeHelper(dynamicTypeHelper, 10);
+            dynamicTypeHelperTime = swDynamicTypeHelper.Elapsed;
+
+            swReflection.Reset();
+            swReflection.Start();
+            RunReflection(properties, 10);
+            reflectionTime = swReflection.Elapsed;
+
+            Debug.Print("10 x Activity");
+            Debug.Print("TypeHelper         - {0}", typeHelperTime);
+            Debug.Print("DynamicTypeHelper  - {0}", dynamicTypeHelperTime);
+            Debug.Print("Reflection         - {0}", reflectionTime);
+
+            Debug.Print("");
+            Debug.Print("");
+
+            swTypeHelper.Reset();
+            swTypeHelper.Start();
+            RunTypeHelper(typeHelper, 100);
+            typeHelperTime = swTypeHelper.Elapsed;
+
+            swDynamicTypeHelper.Reset();
+            swDynamicTypeHelper.Start();
+            RunDynamicTypeHelper(dynamicTypeHelper, 100);
+            dynamicTypeHelperTime = swDynamicTypeHelper.Elapsed;
+
+            swReflection.Reset();
+            swReflection.Start();
+            RunReflection(properties, 100);
+            reflectionTime = swReflection.Elapsed;
+
+            Debug.Print("100 x Activity");
             Debug.Print("TypeHelper         - {0}", typeHelperTime);
             Debug.Print("DynamicTypeHelper  - {0}", dynamicTypeHelperTime);
             Debug.Print("Reflection         - {0}", reflectionTime);
