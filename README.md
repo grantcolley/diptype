@@ -11,7 +11,7 @@ Dynamically created type helpers that using intermediate language to create new 
 * [Performance Tests](#performance-tests)
 
 ## Example Usage
-The following example shows a method reading data and mapping it to fields of a type unknown at design time. The full code for this example can be seen at xxx.
+The following example shows a method reading data and mapping it to fields of a type unknown at design time. The full code for this example can be seen at [dipmapper](https://github.com/grantcolley/dipmapper).
 ```C#
             public virtual T ReadData<T>(IDataReader reader) where T : class, new()
             {
