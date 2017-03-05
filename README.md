@@ -110,7 +110,7 @@ A generic type helper class that creates and caches dynamic methods at runtime f
 ```
 
 ## Performance Tests
-The following shows a simple test (PerformanceTest.cs) where an instance of the Activity class is created and it's properties set and read *n* number of times.
+The following shows the results of a simple test where an instance of the Activity class is created and it's properties set and read *n* number of times. The test can be found in PerformanceTest.cs.
 
 ```C#
 1 x Activity
