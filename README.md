@@ -88,7 +88,13 @@ A generic type helper class that creates and caches dynamic methods at runtime f
             activityHelper.SetValue(activity, "Created", created);
             activityHelper.SetValue(activity, "ActivityType", ActivityTypeEnum.Public);
             
-            // The type helper can get property values from the object.
+> **_WARNING:_**
+> Initialising a sub state directly, without first initialising its parent 
+> will result in the parent’s status being updated to Initialised without 
+> running its **CanInitialise** predicate or its **OnEntry** and **OnStatusChanged** actions. 
+> Consider setting the sub state to initialise with parent and then initialise 
+> the parent instead. This way all initialisation predicates and actions will 
+> be run for both the parent and the child.            // The type helper can get property values from the object.
             var id = activityHelper.GetValue(activity, "Id");
             var name = activityHelper.GetValue(activity, "Name");
             var level = activityHelper.GetValue(activity, "Level");
@@ -111,38 +117,93 @@ A generic type helper class that creates and caches dynamic methods at runtime f
 
 ## Performance Tests
 The following shows the results of a simple test where an instance of the Activity class is created and it's properties set and read *n* number of times. The test can be found in PerformanceTest.cs.
-
+What can be seen from the results below is that while there is an initial performance cost creating the TypeHelper and DynamicTypeHelper,
+an immediate performance benefit can be seen from creating and using the second instance of the type. This is because the helper for the type is cached for re-use.
 ```C#
-// The time it takes to create an instance of the
-// TypeHelper, DynamicTypeHelper or, in the case of 
-// reflection, a list of PropertyInfo's for the same object. 
-// NOTE: caching is used when creating a TypeHelper or DynamicTypeHelper
-// so this is a one off performance hit.
-TypeHelper         - 00:00:00.0050471
-DynamicTypeHelper  - 00:00:00.0038052
-Reflection         - 00:00:00.0000226
-
-
 1 x Activity
-TypeHelper         - 00:00:00.0027211
-DynamicTypeHelper  - 00:00:00.0019163
-Reflection         - 00:00:00.0012029
+TypeHelper         - 00:00:00.0085030
+DynamicTypeHelper  - 00:00:00.0055950
+Reflection         - 00:00:00.0011311
+
+
+2 x Activity
+TypeHelper         - 00:00:00.0000072
+DynamicTypeHelper  - 00:00:00.0000081
+Reflection         - 00:00:00.0000316
+
+
+10 x Activity
+TypeHelper         - 00:00:00.0000162
+DynamicTypeHelper  - 00:00:00.0000290
+Reflection         - 00:00:00.0000551
+
+
+100 x Activity
+TypeHelper         - 00:00:00.0001351
+DynamicTypeHelper  - 00:00:00.0003027
+Reflection         - 00:00:00.0005247
 
 
 1000 x Activity
-TypeHelper         - 00:00:00.0017709
-DynamicTypeHelper  - 00:00:00.0029563
-Reflection         - 00:00:00.0053687
+TypeHelper         - 00:00:00.0014959
+DynamicTypeHelper  - 00:00:00.0038078
+Reflection         - 00:00:00.0054248
 
 
 10000 x Activity
-TypeHelper         - 00:00:00.0172054
-DynamicTypeHelper  - 00:00:00.0367415
-Reflection         - 00:00:00.0601286
+TypeHelper         - 00:00:00.0152330
+DynamicTypeHelper  - 00:00:00.0349026
+Reflection         - 00:00:00.0596197
 
 
 100000 x Activity
-TypeHelper         - 00:00:00.1596597
-DynamicTypeHelper  - 00:00:00.3159577
-Reflection         - 00:00:00.5803338
+TypeHelper         - 00:00:00.1490487
+DynamicTypeHelper  - 00:00:00.3155219
+Reflection         - 00:00:00.5737295
 ```
+
+> What can be seen from the results below is that while there is an initial performance cost creating the TypeHelper and 
+> DynamicTypeHelper,
+> an immediate performance benefit can be seen from creating and using the second instance of the type. This is because the helper for 
+> the type is cached for re-use.
+>
+> 1 x Activity
+> TypeHelper         - 00:00:00.0085030
+> DynamicTypeHelper  - 00:00:00.0055950
+> Reflection         - 00:00:00.0011311
+>
+>
+> 2 x Activity
+> TypeHelper         - 00:00:00.0000072
+> DynamicTypeHelper  - 00:00:00.0000081
+> Reflection         - 00:00:00.0000316
+>
+>
+> 10 x Activity
+> TypeHelper         - 00:00:00.0000162
+> DynamicTypeHelper  - 00:00:00.0000290
+> Reflection         - 00:00:00.0000551
+>
+>
+> 100 x Activity
+> TypeHelper         - 00:00:00.0001351
+> DynamicTypeHelper  - 00:00:00.0003027
+> Reflection         - 00:00:00.0005247
+>
+>
+> 1000 x Activity
+> TypeHelper         - 00:00:00.0014959
+> DynamicTypeHelper  - 00:00:00.0038078
+> Reflection         - 00:00:00.0054248
+>
+>
+> 10000 x Activity
+> TypeHelper         - 00:00:00.0152330
+> DynamicTypeHelper  - 00:00:00.0349026
+> Reflection         - 00:00:00.0596197
+>
+>
+> 100000 x Activity
+> TypeHelper         - 00:00:00.1490487
+> DynamicTypeHelper  - 00:00:00.3155219
+> Reflection         - 00:00:00.5737295
