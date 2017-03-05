@@ -5,8 +5,10 @@
 Dynamically created type helpers that using intermediate language to create new instances of a type and get and set properties faster than reflection.
 
 ####Table of Contents
+* [Example Usage](#example-usage)
 * [TypeHelper\<T>](#typehelper)
 * [DynamicTypeHelper\<T>](#dynamictypehelper)
+* [Performance Tests](#performance-tests)
 
 ## Example Usage
 The following example shows a method reading data and mapping it to fields of a type unknown at design time. The full code for this example can be seen at xxx.
@@ -105,4 +107,32 @@ A generic type helper class that creates and caches dynamic methods at runtime f
             Assert.AreEqual(activity.Created, created);
             Assert.AreEqual(activity.Updated, updated);
             Assert.AreEqual(activity.ActivityType, activityType);
+```
+
+## Performance Tests
+The following shows a simple test (PerformanceTest.cs) where an instance of the Activity class is created and it's properties set and read *n* number of times.
+
+```C#
+1 x Activity
+TypeHelper         - 00:00:00.0027032
+DynamicTypeHelper  - 00:00:00.0017482
+Reflection         - 00:00:00.0010965
+
+
+1000 x Activity
+TypeHelper         - 00:00:00.0014561
+DynamicTypeHelper  - 00:00:00.0032925
+Reflection         - 00:00:00.0054401
+
+
+10000 x Activity
+TypeHelper         - 00:00:00.0153083
+DynamicTypeHelper  - 00:00:00.0444042
+Reflection         - 00:00:00.1129940
+
+
+100000 x Activity
+TypeHelper         - 00:00:00.1736192
+DynamicTypeHelper  - 00:00:00.3503984
+Reflection         - 00:00:00.6266993
 ```
