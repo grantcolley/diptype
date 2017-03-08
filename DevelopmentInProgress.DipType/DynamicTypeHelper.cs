@@ -4,15 +4,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Threading;
+
+[assembly: InternalsVisibleTo("DevelopmentInProgress.DipType.Test")]
 
 namespace DevelopmentInProgress.DipType
 {
+    /// <summary>
+    /// A dynamic type helper containing dynamic methods for the specified type.
+    /// </summary>
+    /// <typeparam name="T">The specified type.</typeparam>
     public class DynamicTypeHelper<T>
     {
         private readonly Dictionary<string, Func<T, object>> getters;
         private readonly Dictionary<string, Action<T, object>> setters;
 
+        /// <summary>
+        /// Initialises a new instance of the DynamicTypeHelper.
+        /// </summary>
+        /// <param name="createInstance">A dynamic method for creating new instance of the specified type.</param>
+        /// <param name="getters">A dictionary of dynamic methods for property getters.</param>
+        /// <param name="setters">A dictionary of dynamic methods for property setters.</param>
+        /// <param name="supportedProperties">A list of property info's for supported properties.</param>
         public DynamicTypeHelper(Func<T> createInstance,
             Dictionary<string, Func<T, object>> getters,
             Dictionary<string, Action<T, object>> setters,
@@ -24,10 +38,22 @@ namespace DevelopmentInProgress.DipType
             SupportedProperties = supportedProperties;
         }
 
+        /// <summary>
+        /// Gets a dynamic method for creating new instance of the specified type
+        /// </summary>
         public Func<T> CreateInstance { get; private set; }
 
+        /// <summary>
+        /// Gets a list of property info's for supported properties.
+        /// </summary>
         public IEnumerable<PropertyInfo> SupportedProperties { get; private set; }
 
+        /// <summary>
+        /// A dynamic method for setting the value of the target property.
+        /// </summary>
+        /// <param name="target">The target property.</param>
+        /// <param name="fieldName">The property name.</param>
+        /// <param name="value">The value to set.</param>
         public void SetValue(T target, string fieldName, object value)
         {
             if (setters.ContainsKey(fieldName))
@@ -39,6 +65,12 @@ namespace DevelopmentInProgress.DipType
             throw new ArgumentOutOfRangeException(fieldName + " not supported.");
         }
 
+        /// <summary>
+        /// A dynamic method for getting the value of the target property.
+        /// </summary>
+        /// <param name="target">The target property.</param>
+        /// <param name="fieldName">The property name.</param>
+        /// <returns>The value of the property.</returns>
         public object GetValue(T target, string fieldName)
         {
             if (setters.ContainsKey(fieldName))
@@ -50,12 +82,21 @@ namespace DevelopmentInProgress.DipType
         }
     }
 
+    /// <summary>
+    /// Builds a new instance of a <see cref="DynamicTypeHelper"/> for the specified type and caches it for re-use.
+    /// </summary>
     public static class DynamicTypeHelper
     {
         internal static readonly IDictionary<Type, object> cache = new ConcurrentDictionary<Type, object>();
 
         private static int counter;
 
+        /// <summary>
+        /// Gets an instance of a <see cref="DynamicTypeHelper"/> for the specified type.
+        /// Once created it is cached for re-use.
+        /// </summary>
+        /// <typeparam name="T">The specified type.</typeparam>
+        /// <returns>An instance of a <see cref="DynamicTypeHelper"/> for the specified type.</returns>
         public static DynamicTypeHelper<T> Get<T>() where T : class, new()
         {
             var t = typeof(T);
@@ -69,6 +110,13 @@ namespace DevelopmentInProgress.DipType
             return Get<T>(propertyInfos);
         }
 
+        /// <summary>
+        /// Gets an instance of a <see cref="DynamicTypeHelper"/> for the specified type.
+        /// Once created it is cached for re-use.
+        /// </summary>
+        /// <typeparam name="T">The specified type.</typeparam>
+        /// <param name="propertyInfos">A list of properties to support.</param>
+        /// <returns>An instance of a <see cref="DynamicTypeHelper"/> for the specified type.</returns>
         public static DynamicTypeHelper<T> Get<T>(IEnumerable<PropertyInfo> propertyInfos) where T : class, new()
         {
             var t = typeof(T);

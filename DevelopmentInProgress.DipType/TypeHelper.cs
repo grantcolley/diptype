@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +11,43 @@ using System.Threading;
 
 namespace DevelopmentInProgress.DipType
 {
+    /// <summary>
+    /// A type helper for the specified type.
+    /// </summary>
+    /// <typeparam name="T">The specified type.</typeparam>
     public abstract class TypeHelper<T>
     {
+        /// <summary>
+        /// Creates a new instance of the specified type.
+        /// </summary>
+        /// <returns>A new instance of the specified type.</returns>
         public abstract T CreateInstance();
+
+        /// <summary>
+        /// Gets the value of the property from the object provided.
+        /// </summary>
+        /// <param name="obj">The target object.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <returns>The value of the property.</returns>
         public abstract object GetValue(object obj, string propertyName);
+
+        /// <summary>
+        /// Sets the value of the property on the object provided.
+        /// </summary>
+        /// <param name="obj">The target object.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="value">The value to set.</param>
         public abstract void SetValue(object obj, string propertyName, object value);
+
+        /// <summary>
+        /// Gets or sets a comma seperated list of supported properties for the specified type.
+        /// </summary>
         public virtual string SupportedProperties { get; set; }
     }
 
+    /// <summary>
+    /// Builds a new instance of a <see cref="TypeHelper"/> for the specified type and caches it for re-use.
+    /// </summary>
     public static class TypeHelper
     {
         internal static readonly IDictionary<Type, object> cache = new ConcurrentDictionary<Type, object>();
@@ -30,6 +58,12 @@ namespace DevelopmentInProgress.DipType
 
         private static int counter;
 
+        /// <summary>
+        /// Gets an instance of a <see cref="TypeHelper"/> for the specified type.
+        /// Once created it is cached for re-use.
+        /// </summary>
+        /// <typeparam name="T">The specified type.</typeparam>
+        /// <returns>An instance of a <see cref="TypeHelper"/> for the specified type.</returns>
         public static TypeHelper<T> Get<T>()
         {
             if (cache.ContainsKey(typeof(T)))
