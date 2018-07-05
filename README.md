@@ -4,7 +4,7 @@
 
 [NuGet package](https://www.nuget.org/packages/DipType/).
 
-Dynamically create type helpers that use intermediate language to create new instances of a type and get and set properties.
+Dynamically create type helpers that uses intermediate language (IL) to create new instances of a type and get and set properties.
 
 #### Table of Contents
 * [Example Usage](#example-usage)
