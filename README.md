@@ -117,12 +117,6 @@ The following shows the results of a simple test where an instance of the Activi
 What can be seen from the results below is that while there is an initial performance cost creating the **TypeHelper** and **DynamicTypeHelper**, the helper for a given type is cached for re-use and an immediate performance benefit can be seen from creating and using the second instance of the type onwards.
 ```C#
 1 x Activity class
-TypeHelper         - 00:00:00.0085030
-DynamicTypeHelper  - 00:00:00.0055950
-Reflection         - 00:00:00.0011311
-
-
-2 x Activity classes
 TypeHelper         - 00:00:00.0000072
 DynamicTypeHelper  - 00:00:00.0000081
 Reflection         - 00:00:00.0000316
