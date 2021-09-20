@@ -8,8 +8,8 @@ Dynamically create type helpers that uses intermediate language (IL) to create n
 
 #### Table of Contents
 * [Example Usage](#example-usage)
-* [TypeHelper\<T>](#typehelper)
-* [DynamicTypeHelper\<T>](#dynamictypehelper)
+* [TypeHelper\<T>](#typehelpert)
+* [DynamicTypeHelper\<T>](#dynamictypehelpert)
 * [Performance Tests](#performance-tests)
 
 ## Example Usage
